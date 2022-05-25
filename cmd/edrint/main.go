@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"path/filepath"
-	"time"
 
-	"github.com/sharat910/edrint/telemetry"
 
 	"github.com/sharat910/edrint/events"
 
@@ -25,10 +23,9 @@ func main() {
 	//manager.RegisterProc(processor.NewSNIParser())
 	//manager.RegisterProc(processor.NewSNIClassifier(viper.GetStringMapString("sniclassifier.classes")))
 	teleManager := processor.NewTelemetryManager()
-	teleManager.AddTFToClass("all_https", telemetry.NewFlowletTracker(50*time.Millisecond))
+	teleManager.AddTFToClass("fortnite", NewFlowPairs(163, 5, 20))
 
 	manager.RegisterProc(teleManager)
-	manager.RegisterProc(&AFLCT{})
 
 	packetPath := viper.GetString("packets.source")
 	//dumpPath := fmt.Sprintf("./files/dumps/%s.json.log", filepath.Base(packetPath))
@@ -36,8 +33,7 @@ func main() {
 		filepath.Dir(filepath.Dir(packetPath)), filepath.Base(packetPath))
 	manager.RegisterProc(processor.NewDumper(dumpPath,
 		[]events.Topic{
-			events.TELEMETRY_FLOWLET,
-			"aflct",
+			"telemetry.flowpairs",
 		}, false))
 
 	err := manager.InitProcessors()
